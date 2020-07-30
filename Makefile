@@ -6,13 +6,13 @@
 #    By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/08 13:46:11 by vkuikka           #+#    #+#              #
-#    Updated: 2020/01/13 21:22:02 by vkuikka          ###   ########.fr        #
+#    Updated: 2020/07/30 16:11:21 by vkuikka          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = lem-in
 LIBFT = libft/libft.a
-FILES = main.c
+FILES = main.c farm_alloc.c
 INCLUDE = libft/includes
 .PHONY: clean fclean re all
 

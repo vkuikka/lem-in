@@ -28,6 +28,7 @@ char				*ft_itoa_base(int num, int base);
 int					*ft_strsplit_int(char *s, char c);
 int					ft_abs(int num);
 void				ft_swap(int *value1, int *value2);
+int					**ft_permutations(int a[], int size, int n);
 int					**ft_new_int_arr(unsigned str_len, unsigned arr_len);
 char				**ft_new_char_arr(unsigned str_len, unsigned arr_len);
 int					ft_factorial(int num);
