@@ -32,7 +32,7 @@ typedef struct	s_room
 	int			signature;		//marks start and end. otherwise path finding lets following iterations know this room has been visited
 }				t_room;
 
-t_room		*ft_farm_alloc(t_room *farm, char **ant_names, int *room_amount, int *ant_amount);
+t_room		*ft_farm_alloc(t_room *farm, int *room_amount, int *ant_amount);
 void		ft_error(char *message);
 
 #endif

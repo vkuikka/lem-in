@@ -133,7 +133,6 @@ t_room		*ft_handle_rooms(int *room_amount, char **map, int line_amount)
 		farm[i].ant_index = -1;
 		i++;
 	}
-	printf("\n~~~~~~\n\n");
 
 	room = 0;
 	line_i = 0;
@@ -152,36 +151,39 @@ t_room		*ft_handle_rooms(int *room_amount, char **map, int line_amount)
 		line_i++;
 	}
 
-	for (int asd = 0; asd < *room_amount; asd++)
-	{
-		printf("%d: ", asd);
-		for (int zxc = 0; zxc < farm[asd].link_amount; zxc++)
-			printf("%d ", farm[asd].links[zxc]);
-		printf("\n");
-	}
+	// for (int asd = 0; asd < *room_amount; asd++)
+	// {
+	// 	printf("%d: ", asd);
+	// 	for (int zxc = 0; zxc < farm[asd].link_amount; zxc++)
+	// 		printf("%d ", farm[asd].links[zxc]);
+	// 	printf("\n");
+	// }
 	return (farm);
 }
 
-int		ft_rooms(char **map, t_room *farm, char **ant_nums, int line_amount)
+int		ft_rooms(char **map, t_room **farm, int line_amount)
 {
 	int		room_amount;
 	int		i;
 
 	i = 0;
 	room_amount = 0;
-	farm = ft_handle_rooms(&room_amount, map, line_amount);
+	*farm = ft_handle_rooms(&room_amount, map, line_amount);
 	while (i < line_amount)
 	{
 		if (!ft_strcmp(map[i], "##start"))
-			farm[i].signature = -1;
+			farm[0][i].signature = -1;
 		else if (!ft_strcmp(map[i], "##end"))
-			farm[i].signature = -2;
+			farm[0][i].signature = -2;
 		else
-			farm[i].signature = 0;
+			farm[0][i].signature = 0; //dont use i here instead use a room counter!!!!!!!!!!
+
+		// printf ("%s\n", map[i]);
+		// printf ("%d\n", farm[0][i].signature);
+		free(map[i]);
 		i++;
 	}
 	return (room_amount);
-	ant_nums = NULL;
 }
 
 char	**ft_add_line_input(char **input, int array_len)
@@ -203,11 +205,13 @@ char	**ft_add_line_input(char **input, int array_len)
 	return (tmp);
 }
 
-t_room		*ft_farm_alloc(t_room *farm, char **ant_nums, int *room_amount, int *ant_amount)
+t_room		*ft_farm_alloc(t_room *farm, int *room_amount, int *ant_amount)
 {
 	char	**map;
 	int		line_amount;
+	int		i;
 
+	i = 0;
 	line_amount = -1;
 	if (!(map = (char**)malloc(sizeof(char *) * 2)))
 		ft_error("memory allocation failed\n");
@@ -215,25 +219,7 @@ t_room		*ft_farm_alloc(t_room *farm, char **ant_nums, int *room_amount, int *ant
 		if (!(map = ft_add_line_input(map, line_amount)))
 			return (NULL);
 	*ant_amount = ft_atoi(map[0]);
-
-
-	for (int j = 0; j < line_amount; j++)
-		printf("%s\n", map[j]);
-	//next get room amount and fill room struct values
-
-	*room_amount = ft_rooms(map, farm, ant_nums, line_amount);
-
-
-	// farm[0].ant_index = ft_atoi(map[0]);
-	// for (int j = 1; j < *room_amount; j++)
-	// 	farm[j].ant_index = j + 1;
-
-	// for (int j = 0; j < *room_amount; j++)
-	// 	printf("%d\n", farm[j].ant_index);
-
-	// while (1);
-
+	*room_amount = ft_rooms(map, &farm, line_amount);
+	free(map);
 	return (farm);
-	ant_nums = NULL;
-	ant_amount = NULL;
 }
