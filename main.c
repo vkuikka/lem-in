@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lem-in.c                                           :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+        */
+/*   By: vkuikka <vkuikka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 15:11:17 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/07/30 15:11:18 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/08/03 20:19:57 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,25 +51,19 @@ void	ft_print_room(t_room room)
 int		main(void)
 {
 	t_room	*farm;
-	char	**ant_nums;
 	int		room_amount;
 	int		ant_amount;
 
 	farm = NULL;
-	ant_nums = NULL;
 	ant_amount = 0;
 	room_amount = 0;
 	if (!(farm = ft_farm_alloc(farm, &room_amount, &ant_amount)))
 		return (1);
+	ft_ants(farm, ant_amount, room_amount);
 
-
-
-
-
-
-	for (int i = 0; i < room_amount; i++)
-		ft_print_room(farm[i]);
-	printf("\nroom amount: %d", room_amount);
-	printf("\nant  amount: %d\n\n", ant_amount);
+	// for (int i = 0; i < room_amount; i++)
+	// 	ft_print_room(farm[i]);
+	// printf("\nroom amount: %d", room_amount);
+	// printf("\nant  amount: %d\n\n", ant_amount);
 	return (0);
 }
