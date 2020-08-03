@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 15:15:28 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/07/31 20:25:05 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/08/03 18:17:53 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,16 +23,32 @@
 // int			room_amount;	//total amount of rooms?
 // int			ant_amount;		//total amount of ants
 
-typedef struct	s_room
+typedef struct		s_room
 {
-	int			ant_index;		//ant index
-	int			*links;			//links from this room
-	int			link_amount;	//total amount of links
-	char		*room_name;		//name of room that was given in input
-	int			signature;		//marks start and end. otherwise path finding lets following iterations know this room has been visited
-}				t_room;
+	char			*room_name;		//name of room that was given in input
+	int				ant_index;		//ant index (if room has an ant)
+	struct s_links	*links;			//list of links from this room
+	int				link_amount;
+	int				signature;		//marks start and end. otherwise path finding lets following iterations know this room has been visited
+}					t_room;
+
+typedef struct		s_input
+{
+	char			*line;
+	struct s_input	*next;
+}					t_input;
+
+typedef struct		s_links
+{
+	int				link;
+	struct s_links	*next;
+	struct s_links	*first;
+}					t_links;
+
+
 
 t_room		*ft_farm_alloc(t_room *farm, int *room_amount, int *ant_amount);
 void		ft_error(char *message);
+void		ft_print_room(t_room room);
 
 #endif

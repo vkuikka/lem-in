@@ -23,10 +23,15 @@ void	ft_error(char *message)
 
 void	ft_print_room(t_room room)
 {
+	t_links		*tmp;
+
+	tmp = room.links->first;
 	printf("name: %s\n", room.room_name);
 	printf("links: ");
-	for (int i = 0; i < room.link_amount; i++)
-		printf("%d ", room.links[i]);
+	for (;tmp->next;tmp = tmp->next)
+		printf("%d ", tmp->link);
+	// if (tmp != room.links->first)
+	// 	printf("\n\n");
 	printf ("  total: %d", room.link_amount);
 	printf ("\nant: ");
 	if (room.ant_index < 0)
@@ -34,8 +39,10 @@ void	ft_print_room(t_room room)
 	else
 		printf ("%d\n", room.ant_index);
 	printf ("signature: ");
-	if (room.signature == 0)
-		printf("none\n");
+	if (room.signature == -1)
+		printf("start\n");
+	else if (room.signature == -2)
+		printf("end\n");
 	else
 		printf ("%d\n", room.signature);
 	printf("\n");
@@ -55,9 +62,14 @@ int		main(void)
 	if (!(farm = ft_farm_alloc(farm, &room_amount, &ant_amount)))
 		return (1);
 
-	while (1);
-	printf("\n\nroom amount: %d\n\n", room_amount);
+
+
+
+
+
 	for (int i = 0; i < room_amount; i++)
 		ft_print_room(farm[i]);
+	printf("\nroom amount: %d", room_amount);
+	printf("\nant  amount: %d\n\n", ant_amount);
 	return (0);
 }

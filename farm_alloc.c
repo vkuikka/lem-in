@@ -16,210 +16,183 @@
 #include <stdio.h>
 #include "libft/includes/libft.h" 
 
-int		ft_current_room(int room_amount, int line_i, char **map, t_room *farm)
+int		ft_find_room(t_room *farm, char *line, int room_amount)
 {
 	int		i;
+	int		changed_i;
+	char	c;
 
-	i = 0;
-	while (i < room_amount)
+	c = '\0';
+	changed_i = 0;
+	while (line[changed_i] && line[changed_i] != '-' && line[changed_i] != ' ')
 	{
-		if (ft_strstr(map[line_i], farm[i].room_name) == map[line_i])
-			break;
-		i++;
+		changed_i++;
+		if (line[changed_i] == '-')
+			c = '-';
+		else if (line[changed_i] == ' ')
+			c = ' ';
 	}
+	line[changed_i] = '\0';
+	i = -1;
+	while (++i < room_amount)
+		if (!ft_strcmp(line, farm[i].room_name))
+		{
+			line[changed_i] = c;
+			return (i);
+		}
+	printf("Formatting error: no matching room found for link %s\n", line);
+	exit(1);
 	return (i);
 }
 
-int		ft_find_name(t_room *farm, char *name, int room_amount)
+void	ft_room_names(t_room *farm, t_input *input)
 {
-	int		i;
-
-	i = 0;
-	while (i < room_amount)
-	{
-		if (!ft_strcmp(farm[i].room_name, name))
-			return (i);
-		i++;
-	}
-	printf("ft_find_name error if this happens edit\n");
-	exit(1);
-	return (-1);
-}
-
-void	ft_room_names(t_room *farm, char **map, int line_amount)
-{
-	int		line_i;
 	int		room_i;
 	int		i;
 
 	i = 0;
 	room_i = 0;
-	line_i = -1;
-	map++;
-	while (++line_i < line_amount)
-		if (map[line_i][0] != '#' && !(ft_strstr(map[line_i], "-")))
+	input = input->next;
+	while (input->next)
+	{
+		if (input->line[0] != '#' && !(ft_strstr(input->line, "-")))
 		{
 			i = 0;
-			while (map[line_i][i] != ' ')
+			while (input->line[i] != ' ')
 				i++;
 			if (!(farm[room_i].room_name = (char *)malloc(sizeof(char) * i + 1)))
 				ft_error("memory allocation failed");
 			i = -1;
-			while (map[line_i][++i] != ' ')
-				farm[room_i].room_name[i] = map[line_i][i];
+			while (input->line[++i] != ' ')
+				farm[room_i].room_name[i] = input->line[i];
 			farm[room_i].room_name[i] = '\0';
 			room_i++;
 		}
-		else if (map[line_i][0] != '#')
+		else if (input->line[0] != '#')
 			return ;
-}
-
-int		*ft_add_room_index(int *arr, int num)
-{
-	int		*new;
-	int		len;
-	int		i;
-
-	len = 0;
-	while (arr[len] != -1)
-		len++;
-	len++;
-	if (!(new = (int *)malloc(sizeof(int) * (len + 1))))
-		ft_error("memory allocation failed");
-	new[len] = -1;
-	i = 0;
-	while (i < len)
-	{
-		new[i] = arr[i];
-		i++;
+		input = input->next;
 	}
-	new[i - 1] = num;
-	free(arr);
-	return(new);
 }
 
-t_room		*ft_handle_rooms(int *room_amount, char **map, int line_amount)
+t_room		*ft_handle_rooms(int *room_amount, t_input *input)
 {
-	// int		room_amount;
+	t_input	*start;
 	t_room	*farm;
-	int		line_i;
 	int		room;
 	int		i;
 
 	i = 0;
-	line_i = 0;
+	start = input;
 	*room_amount = 0;
-	while (line_i < line_amount)
+	while (input->next)
 	{
-		i = 0;
-		if (map[line_i][0] != '#')
-			while (map[line_i][i] && map[line_i][i] != ' ')
+		if (input->line[0] != '#' && !(i = 0))
+			while (input->line[i] && input->line[i] != ' ')
 				i++;
-		if (i && map[line_i][i] == ' ')
+		if (i && input->line[i] == ' ')
 			*room_amount += 1;
-		line_i++;
-	}						//room counting works
+		input = input->next;
+	}
+	printf("%d rooms\n", *room_amount);
 	if (!(farm = (t_room *)malloc(sizeof(t_room) * *room_amount)))
 		ft_error("memory allocation failed\n");
-	ft_room_names(farm, map, line_amount);
+	ft_room_names(farm, start);
 
 	i = 0;
 	while (i < *room_amount)
 	{
-		if (!(farm[i].links = (int *)malloc(sizeof(int) * 1)))
+		if (!(farm[i].links = (t_links *)malloc(sizeof(t_links))))
 			ft_error("memory allocation failed\n");
-		farm[i].links[0] = -1;
+		farm[i].links->link = 0;
+		farm[i].links->next = NULL;
+		farm[i].links->first = farm[i].links;
 		farm[i].link_amount = 0;
 		farm[i].ant_index = -1;
 		i++;
 	}
-
 	room = 0;
-	line_i = 0;
-	while (line_i < line_amount)
+	input = start;
+
+	while (input->next)
 	{
 		i = 0;
-		if (map[line_i][0] != '#')
-			while (map[line_i][i] && map[line_i][i] != '-')
+		if (input->line[0] != '#')
+			while (input->line[i] && input->line[i] != '-')
 				i++;
-		if (i && map[line_i][i] == '-')
+		if (i && input->line[i] == '-')
 		{
-			room = ft_current_room(*room_amount, line_i, map, farm);
-			farm[room].links = ft_add_room_index(farm[room].links, ft_find_name(farm, &map[line_i][i + 1], *room_amount));
+			room = ft_find_room(farm, input->line, *room_amount);
+			farm[room].links->link = ft_find_room(farm, &input->line[i + 1], *room_amount);
+			if (!(farm[room].links->next = (t_links *)malloc(sizeof(t_links))))
+				ft_error("memory allocation failed\n");
+			farm[room].links->next->first = farm[room].links->first;
+			farm[room].links->next->next = NULL;
+			farm[room].links = farm[room].links->next;
 			farm[room].link_amount++;
 		}
-		line_i++;
+		input = input->next;
 	}
-
-	// for (int asd = 0; asd < *room_amount; asd++)
-	// {
-	// 	printf("%d: ", asd);
-	// 	for (int zxc = 0; zxc < farm[asd].link_amount; zxc++)
-	// 		printf("%d ", farm[asd].links[zxc]);
-	// 	printf("\n");
-	// }
 	return (farm);
 }
 
-int		ft_rooms(char **map, t_room **farm, int line_amount)
+int		ft_rooms(t_input *input, t_room **farm, int line_amount)
 {
+	int		last_instruction;
 	int		room_amount;
 	int		i;
 
 	i = 0;
 	room_amount = 0;
-	*farm = ft_handle_rooms(&room_amount, map, line_amount);
-	while (i < line_amount)
+	last_instruction = 0;
+	*farm = ft_handle_rooms(&room_amount, input);
+	while (i < line_amount - 1 && last_instruction < 2)
 	{
-		if (!ft_strcmp(map[i], "##start"))
-			farm[0][i].signature = -1;
-		else if (!ft_strcmp(map[i], "##end"))
-			farm[0][i].signature = -2;
-		else
-			farm[0][i].signature = 0; //dont use i here instead use a room counter!!!!!!!!!!
-
-		// printf ("%s\n", map[i]);
-		// printf ("%d\n", farm[0][i].signature);
-		free(map[i]);
+		if (!ft_strcmp(input->line, "##start") && input->next)
+		{
+			farm[0][ft_find_room(*farm, input->next->line, room_amount)].signature = -1;
+			last_instruction++;
+		}
+		else if (!ft_strcmp(input->line, "##end") && input->next)
+		{
+			farm[0][ft_find_room(*farm, input->next->line, room_amount)].signature = -2;
+			last_instruction++;
+		}
+		free(input->line);
+		input = input->next;
 		i++;
 	}
 	return (room_amount);
 }
 
-char	**ft_add_line_input(char **input, int array_len)
-{
-	char	**tmp;
-	int		i;
-
-	i = -1;
-	if (!(tmp = (char **)malloc(sizeof(char *) * ++array_len + 1)))
-		return (NULL);
-	tmp[array_len] = NULL;
-	while (++i < array_len)
-		if (!(tmp[i] = ft_strdup(input[i])))
-			ft_error("memory allocation failed\n");
-	i = -1;
-	while (++i < array_len)
-		free(input[i]);
-	free(input);
-	return (tmp);
-}
-
 t_room		*ft_farm_alloc(t_room *farm, int *room_amount, int *ant_amount)
 {
-	char	**map;
+	t_input	*input;
+	t_input	*tmp;
 	int		line_amount;
 	int		i;
 
 	i = 0;
 	line_amount = -1;
-	if (!(map = (char**)malloc(sizeof(char *) * 2)))
+	if (!(input = (t_input *)malloc(sizeof(t_input) * 1)))
 		ft_error("memory allocation failed\n");
-	while (get_next_line(0, &map[++line_amount]))
-		if (!(map = ft_add_line_input(map, line_amount)))
-			return (NULL);
-	*ant_amount = ft_atoi(map[0]);
-	*room_amount = ft_rooms(map, &farm, line_amount);
-	free(map);
+	tmp = input;
+	input->line = NULL;
+	while (get_next_line(0, &input->line))
+	{
+		line_amount++;
+		if (!(input->next = (t_input *)malloc(sizeof(t_input) * 1)))
+			ft_error("memory allocation failed\n");
+		input = input->next;
+	}
+	if (!(input->next = (t_input *)malloc(sizeof(t_input) * 1)))
+		ft_error("memory allocation failed\n");
+	input = input->next;
+	input->line = NULL;
+	input->next = NULL;
+	*ant_amount = ft_atoi(tmp->line);
+	*room_amount = ft_rooms(tmp, &farm, line_amount);
+	input = tmp;
 	return (farm);
 }
+	// for (int a = 0; a < room_amount; a++)
+	// 	ft_print_room(farm[0][a]);
