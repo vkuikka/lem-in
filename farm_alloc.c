@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   farm_alloc.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+        */
+/*   By: vkuikka <vkuikka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 15:54:18 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/07/30 15:54:20 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/08/03 20:23:15 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,6 +169,7 @@ t_room		*ft_farm_alloc(t_room *farm, int *room_amount, int *ant_amount)
 	t_input	*input;
 	t_input	*tmp;
 	int		line_amount;
+	int		gnl_error;
 	int		i;
 
 	i = 0;
@@ -177,13 +178,15 @@ t_room		*ft_farm_alloc(t_room *farm, int *room_amount, int *ant_amount)
 		ft_error("memory allocation failed\n");
 	tmp = input;
 	input->line = NULL;
-	while (get_next_line(0, &input->line))
+	while (0 < (gnl_error = get_next_line(0, &input->line)))
 	{
 		line_amount++;
 		if (!(input->next = (t_input *)malloc(sizeof(t_input) * 1)))
 			ft_error("memory allocation failed\n");
 		input = input->next;
 	}
+	if (gnl_error < 0)
+		ft_error("could not read and save file\n");
 	if (!(input->next = (t_input *)malloc(sizeof(t_input) * 1)))
 		ft_error("memory allocation failed\n");
 	input = input->next;
