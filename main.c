@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 15:11:17 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/08/03 20:19:57 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/08/04 12:54:58 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,10 @@ void	ft_error(char *message)
 
 void	ft_print_room(t_room room)
 {
-	t_links		*tmp;
-
-	tmp = room.links->first;
 	printf("name: %s\n", room.room_name);
 	printf("links: ");
-	for (;tmp->next;tmp = tmp->next)
-		printf("%d ", tmp->link);
-	// if (tmp != room.links->first)
-	// 	printf("\n\n");
+	for (int i = 0; i < room.link_amount; i++)
+		printf("%d ", room.links[i]);
 	printf ("  total: %d", room.link_amount);
 	printf ("\nant: ");
 	if (room.ant_index < 0)
@@ -60,10 +55,11 @@ int		main(void)
 	if (!(farm = ft_farm_alloc(farm, &room_amount, &ant_amount)))
 		return (1);
 	ft_ants(farm, ant_amount, room_amount);
+	exit(1);
 
-	// for (int i = 0; i < room_amount; i++)
-	// 	ft_print_room(farm[i]);
-	// printf("\nroom amount: %d", room_amount);
-	// printf("\nant  amount: %d\n\n", ant_amount);
+	for (int i = 0; i < room_amount; i++)
+		ft_print_room(farm[i]);
+	printf("\nroom amount: %d", room_amount);
+	printf("\nant  amount: %d\n\n", ant_amount);
 	return (0);
 }

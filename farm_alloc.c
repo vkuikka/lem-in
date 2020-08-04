@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 15:54:18 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/08/03 20:23:15 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/08/04 12:49:34 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,32 @@ void	ft_room_names(t_room *farm, t_input *input)
 	}
 }
 
+int		*ft_add_room_index(int *arr, int num)
+{
+	int		*new;
+	int		len;
+	int		i;
+
+	len = 0;
+	if (num == -1)
+		ft_error("invalid value -1 passed to ft_add_room_index\n");
+	while (arr[len] != -1)
+		len++;
+	len++;
+	if (!(new = (int *)malloc(sizeof(int) * (len + 1))))
+		ft_error("memory allocation failed");
+	new[len] = -1;
+	i = 0;
+	while (i < len)
+	{
+		new[i] = arr[i];
+		i++;
+	}
+	new[i - 1] = num;
+	free(arr);
+	return(new);
+}
+
 t_room		*ft_handle_rooms(int *room_amount, t_input *input)
 {
 	t_input	*start;
@@ -101,13 +127,12 @@ t_room		*ft_handle_rooms(int *room_amount, t_input *input)
 	i = 0;
 	while (i < *room_amount)
 	{
-		if (!(farm[i].links = (t_links *)malloc(sizeof(t_links))))
+		if (!(farm[i].links = (int *)malloc(sizeof(int) * 1)))
 			ft_error("memory allocation failed\n");
-		farm[i].links->link = 0;
-		farm[i].links->next = NULL;
-		farm[i].links->first = farm[i].links;
+		farm[i].links[0] = -1;
 		farm[i].link_amount = 0;
 		farm[i].ant_index = -1;
+		farm[i].signature = 0;
 		i++;
 	}
 	room = 0;
@@ -122,12 +147,10 @@ t_room		*ft_handle_rooms(int *room_amount, t_input *input)
 		if (i && input->line[i] == '-')
 		{
 			room = ft_find_room(farm, input->line, *room_amount);
-			farm[room].links->link = ft_find_room(farm, &input->line[i + 1], *room_amount);
-			if (!(farm[room].links->next = (t_links *)malloc(sizeof(t_links))))
-				ft_error("memory allocation failed\n");
-			farm[room].links->next->first = farm[room].links->first;
-			farm[room].links->next->next = NULL;
-			farm[room].links = farm[room].links->next;
+			farm[room].links = ft_add_room_index(farm[room].links, ft_find_room(farm, &input->line[i + 1], *room_amount));
+			farm[room].link_amount++;
+			room = ft_find_room(farm, &input->line[i + 1], *room_amount);
+			farm[room].links = ft_add_room_index(farm[room].links, ft_find_room(farm, input->line, *room_amount));
 			farm[room].link_amount++;
 		}
 		input = input->next;
