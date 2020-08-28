@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 15:54:18 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/08/04 12:49:34 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/08/28 14:51:09 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	ft_room_names(t_room *farm, t_input *input)
 	}
 }
 
-int		*ft_add_room_index(int *arr, int num)
+int		*ft_add_num(int *arr, int num)
 {
 	int		*new;
 	int		len;
@@ -135,23 +135,33 @@ t_room		*ft_handle_rooms(int *room_amount, t_input *input)
 		farm[i].signature = 0;
 		i++;
 	}
+
 	room = 0;
 	input = start;
-
+	int stop = 0;
 	while (input->next)
 	{
 		i = 0;
 		if (input->line[0] != '#')
 			while (input->line[i] && input->line[i] != '-')
 				i++;
+		stop = 0;
 		if (i && input->line[i] == '-')
 		{
 			room = ft_find_room(farm, input->line, *room_amount);
-			farm[room].links = ft_add_room_index(farm[room].links, ft_find_room(farm, &input->line[i + 1], *room_amount));
-			farm[room].link_amount++;
-			room = ft_find_room(farm, &input->line[i + 1], *room_amount);
-			farm[room].links = ft_add_room_index(farm[room].links, ft_find_room(farm, input->line, *room_amount));
-			farm[room].link_amount++;
+			while (stop != -1 && farm[room].links[stop] != -1)
+				if (farm[room].links[stop] == ft_find_room(farm, &input->line[i + 1], *room_amount))
+					stop = -1;
+				else
+					stop++;
+			if (stop != -1)
+			{
+				farm[room].links = ft_add_num(farm[room].links, ft_find_room(farm, &input->line[i + 1], *room_amount));
+				farm[room].link_amount++;
+				room = ft_find_room(farm, &input->line[i + 1], *room_amount);
+				farm[room].links = ft_add_num(farm[room].links, ft_find_room(farm, input->line, *room_amount));
+				farm[room].link_amount++;
+			}
 		}
 		input = input->next;
 	}
@@ -197,22 +207,21 @@ t_room		*ft_farm_alloc(t_room *farm, int *room_amount, int *ant_amount)
 
 	i = 0;
 	line_amount = -1;
-	if (!(input = (t_input *)malloc(sizeof(t_input) * 1)))
+	if (!(input = (t_input *)malloc(sizeof(t_input))))
 		ft_error("memory allocation failed\n");
 	tmp = input;
-	input->line = NULL;
 	while (0 < (gnl_error = get_next_line(0, &input->line)))
 	{
 		line_amount++;
-		if (!(input->next = (t_input *)malloc(sizeof(t_input) * 1)))
+		if (!(input->next = (t_input *)malloc(sizeof(t_input))))
 			ft_error("memory allocation failed\n");
 		input = input->next;
 	}
-	if (gnl_error < 0)
-		ft_error("could not read and save file\n");
-	if (!(input->next = (t_input *)malloc(sizeof(t_input) * 1)))
+	if (!(input->next = (t_input *)malloc(sizeof(t_input))))
 		ft_error("memory allocation failed\n");
 	input = input->next;
+	if (gnl_error < 0)
+		ft_error("could not read and save file\n");
 	input->line = NULL;
 	input->next = NULL;
 	*ant_amount = ft_atoi(tmp->line);
@@ -220,5 +229,3 @@ t_room		*ft_farm_alloc(t_room *farm, int *room_amount, int *ant_amount)
 	input = tmp;
 	return (farm);
 }
-	// for (int a = 0; a < room_amount; a++)
-	// 	ft_print_room(farm[0][a]);
