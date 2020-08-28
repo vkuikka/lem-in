@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 15:15:28 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/08/04 11:29:02 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/08/25 14:36:06 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,8 @@ typedef struct		s_room
 {
 	char			*room_name;		//name of room that was given in input
 	int				ant_index;		//ant index (if room has an ant)
-//	struct s_links	*links;			//list of links from this room
 	int				*links;			//array of links from this room
-	int				link_amount;
+	int				link_amount;	//amount of links from this room
 	int				signature;		//marks start and end. otherwise path finding lets following iterations know this room has been visited
 }					t_room;
 
@@ -47,14 +46,16 @@ typedef struct		s_links
 	struct s_links	*first;
 }					t_links;
 
+typedef struct		s_path
+{
+	int				room_index;
+	int				dist;
+}					t_path;
 
 
 t_room		*ft_farm_alloc(t_room *farm, int *room_amount, int *ant_amount);
 void		ft_ants(t_room *farm, int ant_amount, int room_amount);
-int			*ft_add_room_index(int *arr, int num);
-// void		ft_add_link(t_links **list, int link_index);
-// void		ft_new_list(t_links **link, int link_value);
-// int			ft_loop_links(t_links **link, int amount);
+int			*ft_add_num(int *arr, int num);
 
 int			ft_find_room(t_room *farm, char *line, int room_amount);	//move to other file from farm_alloc.c
 

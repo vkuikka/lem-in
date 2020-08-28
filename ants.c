@@ -6,15 +6,14 @@
 /*   By: vkuikka <vkuikka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/03 19:23:18 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/08/04 13:50:01 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/08/25 19:21:33 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem-in.h"
 
-
+//rm this
 #include <stdio.h>
-
 
 static int	ft_find_signature(t_room *farm, int room_amount, int signature)
 {
@@ -59,12 +58,6 @@ static int	ft_dead_end(t_room *farm, int room, int exit_index, int distance)
 	return (1);
 }
 
-// static int	ft_choose_longest(t_links **paths)
-// {
-// 	return (0);
-// 	paths = NULL;
-// }
-
 /*
 **	signatures
 **
@@ -79,11 +72,11 @@ static int	ft_dead_end(t_room *farm, int room, int exit_index, int distance)
 void		ft_ants(t_room *farm, int ant_amount, int room_amount)
 {
 	int		**paths;
-	int		exit_index;
 	int		start_index;
-	int		path;
-	int		room;
+	int		exit_index;
 	int		distance;
+	int		room;
+	int		path;
 	int		i;
 
 	exit_index = ft_find_signature(farm, room_amount, -2);
@@ -115,52 +108,33 @@ void		ft_ants(t_room *farm, int ant_amount, int room_amount)
 	printf("no end apparently\n");
 	exit(1);
 
+
+	// if (farm[farm[room].links[path]].link_amount == 1)
+	// 	farm[farm[room].links[path]].signature = -3;
+
+	// printf("printing paths:\n");
+	// for (int a = 0; a < farm[exit_index].link_amount + 1; a++)
+	// {
+	// 	for (int s = 0; paths[a][s] != -1; s++)
+	// 		printf("%d", paths[a][s]);
+	// 	printf("\n");
+	// }
+
+	// paths[0] = ft_add_num(paths[0], room);
+	distance = 0;
+
 	i = 0;
-	int loop_limit = 0;
-	while (1)
+	room = start_index;
+	// while ()
 	{
-		loop_limit++;
-		if (loop_limit == 10)
-			exit(1);
-		room = start_index;
-		distance = 0;
-		i = 0;
 		while (room != exit_index)
 		{
-			// printf("\n%p\n%p\n", farm[room].links->first, farm[room].links);
-			if (farm[farm[room].links[path]].link_amount == 1)
-			{
-				farm[farm[room].links[path]].signature = -3;
-			}
-			// if (farm[room].link_amount == 1 || ft_dead_end(farm, room))
-			// 	farm[room].signature = -3;
-			// else
-			// 	farm[room].signature = distance;
-
 			room = farm[room].links[path];
-
-			paths[0] = ft_add_room_index(paths[0], room);
-
-			if (!room)
-				exit(1);
-
-			distance++;
-
-			printf("%d\n", room);
 		}
-		// i = ft_choose_longest(paths);
-		
-		printf("printing paths:\n");
-		for (int a = 0; a < farm[exit_index].link_amount + 1; a++)
-		{
-			for (int s = 0; paths[a][s] != -1; s++)
-				printf("%d", paths[a][s]);
-			printf("\n");
-		}
+		i++;
 	}
 
 
-	room = 3;
 	/*
 	find exit room links amount of paths
 	how?
@@ -198,8 +172,12 @@ void		ft_ants(t_room *farm, int ant_amount, int room_amount)
 			stop using that path
 	}
 
+	if you cant find a path to exit with the amount of wanted paths, try without using one of earlier found paths.
+	if that results in a shorter path than earlier or if that results in more paths to exit then use the new one.
+
 	*/
 
 	return ;
 	ant_amount = 3;
+	room = 3;
 }
