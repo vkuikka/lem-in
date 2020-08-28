@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 15:11:17 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/08/04 12:54:58 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/08/28 15:51:00 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,12 @@ void	ft_print_room(t_room room)
 	else
 		printf ("%d\n", room.ant_index);
 	printf ("signature: ");
-	if (room.signature == -1)
+	if(room.signature == -1)
 		printf("start\n");
 	else if (room.signature == -2)
 		printf("end\n");
 	else
-		printf ("%d\n", room.signature);
+		printf("%d\n", room.signature);
 	printf("\n");
 }
 
@@ -54,6 +54,10 @@ int		main(void)
 	room_amount = 0;
 	if (!(farm = ft_farm_alloc(farm, &room_amount, &ant_amount)))
 		return (1);
+	for (int i = 0; i < room_amount; i++)
+		ft_print_room(farm[i]);
+	printf("\n\n");
+	
 	ft_ants(farm, ant_amount, room_amount);
 	exit(1);
 
