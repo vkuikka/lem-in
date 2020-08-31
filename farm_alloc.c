@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 15:54:18 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/08/28 14:51:09 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/08/31 14:53:32 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,6 +224,8 @@ t_room		*ft_farm_alloc(t_room *farm, int *room_amount, int *ant_amount)
 		ft_error("could not read and save file\n");
 	input->line = NULL;
 	input->next = NULL;
+	while (tmp->line[0] == '#')
+		tmp = tmp->next;
 	*ant_amount = ft_atoi(tmp->line);
 	*room_amount = ft_rooms(tmp, &farm, line_amount);
 	input = tmp;
