@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 15:54:18 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/08/31 14:53:32 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/08/31 18:37:57 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ t_room		*ft_handle_rooms(int *room_amount, t_input *input)
 			*room_amount += 1;
 		input = input->next;
 	}
-	printf("%d rooms\n", *room_amount);
+	// printf("%d rooms\n", *room_amount);
 	if (!(farm = (t_room *)malloc(sizeof(t_room) * *room_amount)))
 		ft_error("memory allocation failed\n");
 	ft_room_names(farm, start);

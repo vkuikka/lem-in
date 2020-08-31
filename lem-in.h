@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 15:15:28 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/08/31 14:04:09 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/08/31 17:44:52 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ int			ft_find_room(t_room *farm, char *line, int room_amount);	//move to other f
 void		ft_error(char *message);
 void		ft_print_room(t_room room);
 void		ft_print_farm(t_room *farm);
+void		ft_print_signatures(t_room *farm, int depth, int room);
 
 
 #endif

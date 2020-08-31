@@ -6,13 +6,15 @@
 /*   By: vkuikka <vkuikka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 15:11:17 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/08/31 14:55:24 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/08/31 18:26:17 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem-in.h"
 
 #include <stdio.h>
+
+static int room_amount;
 
 void	ft_error(char *message)
 {
@@ -43,12 +45,26 @@ void	ft_print_room(t_room room)
 	printf("\n");
 }
 
-static int room_amount;
-
 void	ft_print_farm(t_room *farm)
 {
 	for (int i = 0; i < room_amount; i++)
 		ft_print_room(farm[i]);
+}
+
+void	ft_print_signatures(t_room *farm, int depth, int room)
+{
+	if (farm[room].link_amount <= 1)
+		printf("\n");
+	for (int i = 0; i < farm[room].link_amount; i++)
+	{
+		if (farm[farm[room].links[i]].signature != -5)
+		{
+			printf("%d ", farm[farm[room].links[i]].signature);
+			farm[room].signature = -5;
+			farm[farm[room].links[i]].signature = -5;
+			ft_print_signatures(farm, depth, farm[room].links[i]);
+		}
+	}
 }
 
 int		main(void)
@@ -62,16 +78,9 @@ int		main(void)
 	room_amount = 0;
 	if (!(farm = ft_farm_alloc(farm, &room_amount, &ant_amount)))
 		return (1);
-	for (int i = 0; i < room_amount; i++)
-		ft_print_room(farm[i]);
-	printf("\n\n");
-	
+	// for (int i = 0; i < room_amount; i++)
+	// 	ft_print_room(farm[i]);
+	// printf("\n\n");
 	ft_ants(farm, ant_amount, room_amount);
-	exit(1);
-
-	for (int i = 0; i < room_amount; i++)
-		ft_print_room(farm[i]);
-	printf("\nroom amount: %d", room_amount);
-	printf("\nant  amount: %d\n\n", ant_amount);
 	return (0);
 }

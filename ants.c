@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/03 19:23:18 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/08/31 16:06:16 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/08/31 18:54:16 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static int	ft_dead_end(t_room *farm, int room, int exit_index, int distance)
 	return (1);
 }
 
-static int	ft_map_farm(t_room *farm, int room, int **paths)
+static int	ft_map_farm(t_room *farm, int room)
 {
 	int		i;
 	int		valid_links;
@@ -69,51 +69,11 @@ static int	ft_map_farm(t_room *farm, int room, int **paths)
 		farm[room].signature = -3;
 		return (0);
 	}
-	i = -1;
-	// while (++i < farm[room].link_amount && farm[room].links[i] != -1)
-	// {
-	// 	if (farm[farm[room].links[i]].signature == -2)
-	// 	{
-	// 		ft_print_farm(farm);
-	// 		printf("\nend: \n");
-	// 		ft_print_room(farm[farm[room].links[i]]);
-	// 		for (int i = 0; farm[i].signature != -2;)
-	// 		{
-	// 			printf("%s ", farm[i].room_name);
-	// 			printf("%d\n", farm[i].signature);
-	// 			for (int j = 0; j < farm[i].link_amount; j++)
-	// 			{
-	// 				if (farm[i].signature == -1)
-	// 					farm[i].signature = 0;
-	// 				if (farm[farm[i].links[j]].signature == farm[i].signature + 1)
-	// 				{
-	// 					for (int k = 0; k < farm[i].link_amount; k++)
-	// 						if (farm[farm[i].links[k]].signature == farm[i].signature + 1 && j != k)
-	// 						{
-	// 							printf("multiple possible paths!!!!!!\n");
-	// 							exit(1);
-	// 						}
-	// 					i = farm[i].links[j];
-	// 					break;
-	// 				}
-	// 				if (farm[farm[i].links[j]].signature == -2)
-	// 				{
-	// 					printf("%s ", farm[farm[i].links[j]].room_name);
-	// 					printf("%d\n", farm[farm[i].links[j]].signature);
-	// 					exit(1);
-	// 				}
-	// 			}
-	// 		}
-	// 		exit(1);
-	// 	}
-	// }
 	i = 0;
 	while (i < farm[room].link_amount && farm[room].links[i] != -1)
 	{
 		if (farm[farm[room].links[i]].signature == -2)
-		{
 			return (1);
-		}
 		if (farm[farm[room].links[i]].signature == 0 ||
 			farm[farm[room].links[i]].signature > farm[room].signature + 1)
 		{
@@ -121,9 +81,7 @@ static int	ft_map_farm(t_room *farm, int room, int **paths)
 			if (farm[room].signature == -1)
 				farm[farm[room].links[i]].signature = 1;
 
-			paths[0][0] = room;
-			paths[0]++;
-			if (ft_map_farm(farm, farm[room].links[i], paths))
+			if (ft_map_farm(farm, farm[room].links[i]))
 				valid_links++;
 		}
 		i++;
@@ -141,8 +99,37 @@ static int	ft_map_farm(t_room *farm, int room, int **paths)
 	// farm[room].signature = ;
 	// printf("reached end\n");
 	return (1);
+}
 
-	farm = NULL;
+void		ft_find_paths(t_room *farm, int start_index, int end_index, int **paths)
+{
+	int		path_amount;
+	int		found_paths;
+	int		last;
+	int		room;
+	int		i;
+
+	i = 0;
+	last = -9;
+	found_paths = 0;
+	path_amount = farm[start_index].link_amount < farm[end_index].link_amount ?
+				farm[start_index].link_amount : farm[end_index].link_amount;
+	room = end_index;
+	while (i < farm[room].link_amount)
+	{
+		if (farm[farm[room].links[i]].signature != -3 && farm[room].links[i] != last)
+		{
+			last = room;
+			room = farm[room].links[i];
+			i = 0;
+		}
+		else
+			i++;
+		ft_print_room(farm[room]);
+	}
+	printf("%d\n", i);
+	start_index = 3;
+	end_index = 3;
 	paths = NULL;
 }
 
@@ -154,53 +141,56 @@ static int	ft_map_farm(t_room *farm, int room, int **paths)
 **	-1 start
 **	0 not visited
 **	0 < distance from start
-**
 */
 
 void		ft_ants(t_room *farm, int ant_amount, int room_amount)
 {
 	int		**paths;
+	int		path_amount;
 	int		start_index;
 	int		exit_index;
 	int		room;
 
 	exit_index = ft_find_signature(farm, room_amount, -2);
 	start_index = ft_find_signature(farm, room_amount, -1);
-	if (!(paths = (int **)malloc(sizeof(int *) * farm[exit_index].link_amount + 1)))
+	path_amount = farm[start_index].link_amount < farm[exit_index].link_amount ?
+				farm[start_index].link_amount : farm[exit_index].link_amount;
+	if (!(paths = (int **)malloc(sizeof(int *) * path_amount)))
 		ft_error("memory allocation failed");
 	room = 0;
-	while (room < farm[exit_index].link_amount + 1)
+	while (room < path_amount)
 	{
 		if (!(paths[room] = (int *)malloc(sizeof(int) * room_amount)))
 			ft_error("memory allocation failed");
 		ft_memset(paths[room], -1, room_amount * 4);
 		room++;
 	}
+	// printf("end links: ");
+	// for (int asd = 0; asd < farm[exit_index].link_amount; asd++)
+	// 	printf("%d ", farm[exit_index].links[asd]);
+	// printf("\n");
 
+	// printf("start links: ");
+	// for (int asd = 0; asd < farm[start_index].link_amount; asd++)
+	// 	printf("%d ", farm[start_index].links[asd]);
+	// printf("\n");
 
-	printf("end links: ");
-	for (int asd = 0; asd < farm[exit_index].link_amount; asd++)
-		printf("%d ", farm[exit_index].links[asd]);
-	printf("\n");
-
-	printf("start links: ");
-	for (int asd = 0; asd < farm[start_index].link_amount; asd++)
-		printf("%d ", farm[start_index].links[asd]);
-	printf("\n\n");
-
-	ft_map_farm(farm, start_index, paths + 1);
+	ft_map_farm(farm, start_index);
+	//if there is only one link in either start or exit stop here
+	ft_find_paths(farm, start_index, exit_index, paths);
+	exit(1);
 
 	ft_print_farm(farm);
-	// exit(1);
-	printf("\nfind: \n");
-	ft_print_room(farm[0]);
+
+	printf("\nfind: \n\n");
+	// ft_print_room(farm[0]);
 	int last = -123;
 	for (int i = exit_index; farm[i].signature != -1;)
 	{
 		printf("%s ", farm[i].room_name);
 		printf("%d\n", farm[i].signature);
 		if (i == last || farm[i].signature == -3)
-			exit(1);
+			return ;
 		last = i;
 
 		int	smallest;
@@ -214,7 +204,7 @@ void		ft_ants(t_room *farm, int ant_amount, int room_amount)
 			ft_print_room(farm[i]);
 			if (farm[i].link_amount)
 				ft_print_room(farm[farm[i].links[0]]);
-			exit(1);
+			return ;
 		}
 		for (int j = 0; j < farm[i].link_amount; j++)
 		{
@@ -234,7 +224,7 @@ void		ft_ants(t_room *farm, int ant_amount, int room_amount)
 			{
 				printf("%s ", farm[farm[i].links[j]].room_name);
 				printf("%d\n", farm[farm[i].links[j]].signature);
-				exit(1);
+				return ;
 			}
 		}
 		if (farm[i].signature == -1)
@@ -243,11 +233,9 @@ void		ft_ants(t_room *farm, int ant_amount, int room_amount)
 			printf("%d\n", farm[i].signature);
 		}
 	}
-
-	exit(1);
+	return ;
 
 	ft_dead_end(farm, start_index, exit_index, 1);
-	printf("no end apparently\n");
 	exit(1);
 
 
