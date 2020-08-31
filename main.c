@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 15:11:17 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/08/28 15:51:00 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/08/31 14:55:24 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,18 @@ void	ft_print_room(t_room room)
 	printf("\n");
 }
 
+static int room_amount;
+
+void	ft_print_farm(t_room *farm)
+{
+	for (int i = 0; i < room_amount; i++)
+		ft_print_room(farm[i]);
+}
+
 int		main(void)
 {
 	t_room	*farm;
-	int		room_amount;
+	// int		room_amount;
 	int		ant_amount;
 
 	farm = NULL;

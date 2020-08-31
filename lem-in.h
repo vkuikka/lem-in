@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 15:15:28 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/08/25 14:36:06 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/08/31 14:04:09 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,6 @@ typedef struct		s_links
 	struct s_links	*first;
 }					t_links;
 
-typedef struct		s_path
-{
-	int				room_index;
-	int				dist;
-}					t_path;
-
-
 t_room		*ft_farm_alloc(t_room *farm, int *room_amount, int *ant_amount);
 void		ft_ants(t_room *farm, int ant_amount, int room_amount);
 int			*ft_add_num(int *arr, int num);
@@ -61,6 +54,7 @@ int			ft_find_room(t_room *farm, char *line, int room_amount);	//move to other f
 
 void		ft_error(char *message);
 void		ft_print_room(t_room room);
+void		ft_print_farm(t_room *farm);
 
 
 #endif
