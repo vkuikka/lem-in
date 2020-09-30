@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ants.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkuikka <vkuikka@student.42.fr>            +#+  +:+       +#+        */
+/*   By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/03 19:23:18 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/08/31 18:54:16 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/09/17 15:34:15 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem-in.h"
 
-//rm this
-#include <stdio.h>
+#include <stdio.h> //remove this when project is done
 
 static int	ft_find_signature(t_room *farm, int room_amount, int signature)
 {
@@ -26,36 +25,9 @@ static int	ft_find_signature(t_room *farm, int room_amount, int signature)
 			return (i);
 		i++;
 	}
-	printf("error: no exit");
+	printf("error: no exit fix me");
 	exit(1);
 	return (-1);
-}
-
-static int	ft_dead_end(t_room *farm, int room, int exit_index, int distance)
-{
-	int		i;
-
-	i = 0;
-	while (i < farm[room].link_amount)
-	{
-		// printf("%d\n", i);
-		// printf("%d\n", farm[room].link_amount);
-		// ft_print_room(farm[room]);
-		farm[room].signature = distance;
-		distance++;
-		if (farm[room].signature == -3 || farm[room].link_amount < 2)
-			return (0);
-		else if (farm[farm[room].links[i]].signature == 0 && ft_dead_end(farm, farm[room].links[i], exit_index, distance))
-			return(0);
-		else if (room == exit_index || farm[farm[room].links[i]].signature == -2)
-		{
-			printf("end found from room %d\n", room);
-			exit(1);
-		}
-		i++;
-	}
-	printf("%d reached end of loop\n", room);
-	return (1);
 }
 
 static int	ft_map_farm(t_room *farm, int room)
@@ -95,9 +67,6 @@ static int	ft_map_farm(t_room *farm, int room)
 		farm[room].signature = -3;
 		return (0);
 	}
-
-	// farm[room].signature = ;
-	// printf("reached end\n");
 	return (1);
 }
 
@@ -184,104 +153,31 @@ void		ft_ants(t_room *farm, int ant_amount, int room_amount)
 
 	printf("\nfind: \n\n");
 	// ft_print_room(farm[0]);
-	int last = -123;
-	for (int i = exit_index; farm[i].signature != -1;)
-	{
-		printf("%s ", farm[i].room_name);
-		printf("%d\n", farm[i].signature);
-		if (i == last || farm[i].signature == -3)
-			return ;
-		last = i;
-
-		int	smallest;
-		smallest = -123;
-		for (int j = 0; j < farm[i].link_amount; j++)
-			if (farm[farm[i].links[j]].signature > 0)
-				smallest = farm[i].links[j];
-		if (smallest == -123)
-		{
-			printf("\n\nno valid path from:\n");
-			ft_print_room(farm[i]);
-			if (farm[i].link_amount)
-				ft_print_room(farm[farm[i].links[0]]);
-			return ;
-		}
-		for (int j = 0; j < farm[i].link_amount; j++)
-		{
-			if (farm[farm[i].links[j]].signature <= farm[smallest].signature && farm[farm[i].links[j]].signature > 0)
-			{
-				// for (int k = 0; k < farm[i].link_amount; k++)
-				// 	if (farm[farm[i].links[k]].signature == farm[i].signature + 1 && j != k)
-				// 	{
-				// 		printf("multiple possible paths!!!!!!\n");
-				// 		// exit(1);
-				// 	}
-				farm[i].signature = -3;
-				i = farm[i].links[j];
-				break;
-			}
-			if (farm[farm[i].links[j]].signature == -1)
-			{
-				printf("%s ", farm[farm[i].links[j]].room_name);
-				printf("%d\n", farm[farm[i].links[j]].signature);
-				return ;
-			}
-		}
-		if (farm[i].signature == -1)
-		{
-			printf("%s ", farm[i].room_name);
-			printf("%d\n", farm[i].signature);
-		}
-	}
-	return ;
-
-	ft_dead_end(farm, start_index, exit_index, 1);
 	exit(1);
 
 
-	/*
-	find exit room links amount of paths
-	how?
-		iterate through linked list and mark them
-		when you reach a room that has no links mark it as -3 and start from beginning
-		mark rooms by amount of links visited
-		always look at the next rooms signature and amount of links
-		if amount of links is greater than signature
-			move to that room
-		else
-			use unused link from this room
-		{
-			keep counting the length of the path
-			if a link has a greater length than current length
-				use that link to calculate the new length of that path
-				if length suddenly drops
-					current path is not fastest way to move that way
-				if length suddenly rises
-					faster path through that room can be found
-				if more paths have to be found to exit
-					the path length numbers changing dont matter but shortest path should be used
-		} or {
-			try iterating to points that definitely lead to end
-			if ant cannot go to one of those without going through the other
-				another path has to be found there
-		}
 
-	find out what amount of ants can be sent to each path by calculating their lengths
-	(data structure may have to be modified linked list is hard or maybe add different linked list with lengths)
-
-	while ants in start
-	{
-		move ants through path
-		if less than longest path length ants are in start (paths are in length order to speed up this)
-			stop using that path
-	}
-
-	if you cant find a path to exit with the amount of wanted paths, try without using one of earlier found paths.
-	if that results in a shorter path than earlier or if that results in more paths to exit then use the new one.
-
-	*/
 
 	return ;
 	ant_amount = 3;
 	room = 3;
 }
+
+/*	NOTES
+
+	find an amount of paths equal to the amount of links to last or first room depending on which is smaller
+	iterate through all rooms and mark visited rooms.
+		mark all rooms as distance from starting room
+		if dead end is found mark it as -3
+		as rooms are iterated, paths to dead ends will be marked with -3 
+
+	if a link has greater than current length
+		use that link to calculate the new length of that path
+		if length suddenly drops
+			current path is not fastest way to move that way
+		if length suddenly rises
+			faster path through that room can be found
+		if more paths have to be found to exit
+			the path length numbers changing dont matter but shortest path should be used
+
+*/
