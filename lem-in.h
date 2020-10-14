@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lem-in.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkuikka <vkuikka@student.42.fr>            +#+  +:+       +#+        */
+/*   By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 15:15:28 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/08/31 17:44:52 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/10/14 14:30:09 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 typedef struct		s_room
 {
 	char			*room_name;		//name of room that was given in input
-	int				ant_index;		//ant index (if room has an ant)
+	int				path_index;		//mark all found pahts so they can be used
 	int				*links;			//array of links from this room
 	int				link_amount;	//amount of links from this room
 	int				signature;		//marks start and end. otherwise path finding lets following iterations know this room has been visited

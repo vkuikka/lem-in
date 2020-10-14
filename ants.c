@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/03 19:23:18 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/09/17 15:34:15 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/10/14 15:33:11 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int	ft_find_signature(t_room *farm, int room_amount, int signature)
 			return (i);
 		i++;
 	}
-	printf("error: no exit fix me");
+	printf("error: room not found fix me now\n");
 	exit(1);
 	return (-1);
 }
@@ -70,36 +70,72 @@ static int	ft_map_farm(t_room *farm, int room)
 	return (1);
 }
 
-void		ft_find_paths(t_room *farm, int start_index, int end_index, int **paths)
+static int	ft_next_link(t_room *farm, int path, int room)
+{
+	int		i;
+	int		best_len;
+	int		best_link;
+
+	i = 0;
+	best_len = -1;
+	best_link = -1;
+	while (i < farm[room].link_amount)
+	{
+		if (farm[farm[room].links[i]].signature == -1)
+			return (farm[room].links[i]);
+		if (farm[farm[room].links[i]].signature > -1 &&
+			farm[farm[room].links[i]].path_index == -1 &&
+			(farm[farm[room].links[i]].signature < best_len || best_len == -1))
+		{
+			best_len = farm[farm[room].links[i]].signature;
+			best_link = farm[room].links[i];
+		}
+		i++;
+	}
+	/*
+		if no possible link is found trace path backwards until another path is found.
+		also check if current path intercepts another path and first trace that path backwards until another path is found for it.
+		maybe do both checks for path length before deciding which path to take
+
+		currently the first shortest path is found for sure but interception has to be solved
+	*/
+	if (best_len == -1)
+	{
+		// ft_secondary_path(); //?
+		printf("exit because path probably intercepts another\n");
+		exit(1);
+	}
+
+	farm[best_link].path_index = path;
+	room = best_link;
+	return (room);
+}
+
+void		ft_find_paths(t_room *farm, int start_index, int end_index)
 {
 	int		path_amount;
 	int		found_paths;
-	int		last;
 	int		room;
 	int		i;
 
 	i = 0;
-	last = -9;
+	path_amount = 0;
+	while (i < farm[start_index].link_amount)
+		if (farm[farm[start_index].links[i++]].signature != -3)
+			path_amount++;
+	path_amount = path_amount < farm[end_index].link_amount ?
+				path_amount : farm[end_index].link_amount;
+	printf("possible paths: %d\n", path_amount);
+
 	found_paths = 0;
-	path_amount = farm[start_index].link_amount < farm[end_index].link_amount ?
-				farm[start_index].link_amount : farm[end_index].link_amount;
-	room = end_index;
-	while (i < farm[room].link_amount)
+	while (found_paths < path_amount)
 	{
-		if (farm[farm[room].links[i]].signature != -3 && farm[room].links[i] != last)
-		{
-			last = room;
-			room = farm[room].links[i];
-			i = 0;
-		}
-		else
-			i++;
-		ft_print_room(farm[room]);
+		room = end_index;
+		while (room != start_index)
+			room = ft_next_link(farm, found_paths, room);
+		printf("path found to end/start\n");
+		found_paths++;
 	}
-	printf("%d\n", i);
-	start_index = 3;
-	end_index = 3;
-	paths = NULL;
 }
 
 /*
@@ -114,7 +150,7 @@ void		ft_find_paths(t_room *farm, int start_index, int end_index, int **paths)
 
 void		ft_ants(t_room *farm, int ant_amount, int room_amount)
 {
-	int		**paths;
+	// int		**paths;
 	int		path_amount;
 	int		start_index;
 	int		exit_index;
@@ -124,29 +160,29 @@ void		ft_ants(t_room *farm, int ant_amount, int room_amount)
 	start_index = ft_find_signature(farm, room_amount, -1);
 	path_amount = farm[start_index].link_amount < farm[exit_index].link_amount ?
 				farm[start_index].link_amount : farm[exit_index].link_amount;
-	if (!(paths = (int **)malloc(sizeof(int *) * path_amount)))
-		ft_error("memory allocation failed");
-	room = 0;
-	while (room < path_amount)
-	{
-		if (!(paths[room] = (int *)malloc(sizeof(int) * room_amount)))
-			ft_error("memory allocation failed");
-		ft_memset(paths[room], -1, room_amount * 4);
-		room++;
-	}
-	// printf("end links: ");
-	// for (int asd = 0; asd < farm[exit_index].link_amount; asd++)
-	// 	printf("%d ", farm[exit_index].links[asd]);
-	// printf("\n");
+	// if (!(paths = (int **)malloc(sizeof(int *) * path_amount)))
+	// 	ft_error("memory allocation failed");
+	// room = 0;
+	// while (room < path_amount)
+	// {
+	// 	if (!(paths[room] = (int *)malloc(sizeof(int) * room_amount)))
+	// 		ft_error("memory allocation failed");
+	// 	ft_memset(paths[room], -1, room_amount * 4);
+	// 	room++;
+	// }
+	printf("start links: ");
+	for (int i = 0; i < farm[start_index].link_amount; i++)
+		printf("%d ", farm[start_index].links[i]);
 
-	// printf("start links: ");
-	// for (int asd = 0; asd < farm[start_index].link_amount; asd++)
-	// 	printf("%d ", farm[start_index].links[asd]);
-	// printf("\n");
+	printf("\nend links: ");
+	for (int i = 0; i < farm[exit_index].link_amount; i++)
+		printf("%d ", farm[exit_index].links[i]);
+	printf("\n");
+
 
 	ft_map_farm(farm, start_index);
 	//if there is only one link in either start or exit stop here
-	ft_find_paths(farm, start_index, exit_index, paths);
+	ft_find_paths(farm, start_index, exit_index);
 	exit(1);
 
 	ft_print_farm(farm);

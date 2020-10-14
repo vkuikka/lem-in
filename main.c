@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkuikka <vkuikka@student.42.fr>            +#+  +:+       +#+        */
+/*   By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 15:11:17 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/08/31 18:26:17 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/10/14 14:31:46 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,11 @@ void	ft_print_room(t_room room)
 	for (int i = 0; i < room.link_amount; i++)
 		printf("%d ", room.links[i]);
 	printf ("  total: %d", room.link_amount);
-	printf ("\nant: ");
-	if (room.ant_index < 0)
+	printf ("\npath: ");
+	if (room.path_index < 0)
 		printf("none\n");
 	else
-		printf ("%d\n", room.ant_index);
+		printf ("%d\n", room.path_index);
 	printf ("signature: ");
 	if(room.signature == -1)
 		printf("start\n");

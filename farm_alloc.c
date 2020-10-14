@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   farm_alloc.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkuikka <vkuikka@student.42.fr>            +#+  +:+       +#+        */
+/*   By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 15:54:18 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/08/31 18:37:57 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/10/14 14:32:01 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ t_room		*ft_handle_rooms(int *room_amount, t_input *input)
 			ft_error("memory allocation failed\n");
 		farm[i].links[0] = -1;
 		farm[i].link_amount = 0;
-		farm[i].ant_index = -1;
+		farm[i].path_index = -1;
 		farm[i].signature = 0;
 		i++;
 	}
