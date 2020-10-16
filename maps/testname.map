@@ -1,0 +1,23 @@
+5
+##start
+one 23 3
+two 16 7
+three 16 3
+four 16 5
+five 9 3
+six one 5
+seven 4 8
+##end
+zero 9 5
+zero-four
+zero-six
+one-three
+four-three
+five-two
+three-five
+four-two
+two-one
+seven-six
+seven-two
+seven-four
+six-five
