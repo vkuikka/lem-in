@@ -6,13 +6,11 @@
 /*   By: vkuikka <vkuikka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/03 19:23:18 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/10/16 13:49:02 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/10/16 15:34:27 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem-in.h"
-
-#include <stdio.h> //remove this when project is done
 
 static int	ft_find_signature(t_room *farm, int room_amount, int signature)
 {
@@ -67,90 +65,6 @@ static int	ft_map_farm(t_room *farm, int room)
 		return (0);
 	}
 	return (1);
-}
-
-static int	ft_next_link(t_room *farm, int path, int room)
-{
-	static t_room	*secondary = NULL;
-	static int		secondary_range = 0;
-	int				best_link;
-	int				best_len;
-	int				i;
-
-	i = 0;
-	best_len = -1;
-	best_link = -1;
-	if (secondary && secondary->path_index != path)
-	{
-		secondary_range = 0;
-		secondary = NULL;
-	}
-	while (i < farm[room].link_amount)
-	{
-		if (farm[farm[room].links[i]].signature == -1)
-			return (farm[room].links[i]);
-		if (farm[farm[room].links[i]].signature > -1 &&
-			(farm[farm[room].links[i]].signature < best_len || best_len == -1))
-		{
-			if (farm[farm[room].links[i]].path_index != -1 && 
-				farm[farm[room].links[i]].path_index != path &&
-				(secondary == NULL || secondary->signature >
-				farm[farm[room].links[i]].signature + secondary_range))
-			{
-				secondary_range = 0;
-				secondary = &farm[farm[room].links[i]];
-			}
-			else if (farm[farm[room].links[i]].path_index == -1)
-			{
-				best_len = farm[farm[room].links[i]].signature;
-				best_link = farm[room].links[i];
-			}
-		}
-		i++;
-	}
-	secondary_range++;
-	/*
-		if no possible link is found trace both paths backwards until the shortest path between them is found.
-		if during this more paths are found trace all paths (recursion?) until shortest paths are found
-	*/
-	if (best_len == -1)
-	{
-		// ft_secondary_path(); //?
-		printf("\n%d\n\n", secondary_range);
-		ft_print_room(*secondary);
-		printf("exit because path intercepts another\n");
-		exit(1);
-	}
-
-	farm[best_link].path_index = path;
-	return (best_link);
-}
-
-void		ft_find_paths(t_room *farm, int start_index, int end_index)
-{
-	int		path_amount;
-	int		found_paths;
-	int		room;
-	int		i;
-
-	i = 0;
-	path_amount = 0;
-	while (i < farm[start_index].link_amount)
-		if (farm[farm[start_index].links[i++]].signature != -3)
-			path_amount++;
-	path_amount = path_amount < farm[end_index].link_amount ?
-				path_amount : farm[end_index].link_amount;
-	printf("possible paths: %d\n", path_amount);
-
-	found_paths = 0;
-	while (found_paths < path_amount)
-	{
-		room = end_index;
-		while (room != start_index)
-			room = ft_next_link(farm, found_paths, room);
-		printf("path found to end/start\n");
-		found_paths++;
-	}
 }
 
 /*

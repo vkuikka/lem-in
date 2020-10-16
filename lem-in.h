@@ -3,16 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   lem-in.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+        */
+/*   By: vkuikka <vkuikka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 15:15:28 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/10/14 14:30:09 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/10/16 14:51:37 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef	LEMIN_H
 # define LEMIN_H
 # include "libft.h"
+# include <stdio.h> //remove this when project is done
+
 
 /*
 **	Room names are stored int **room_names so indexes can be used in calculations.
@@ -49,6 +51,8 @@ typedef struct		s_links
 t_room		*ft_farm_alloc(t_room *farm, int *room_amount, int *ant_amount);
 void		ft_ants(t_room *farm, int ant_amount, int room_amount);
 int			*ft_add_num(int *arr, int num);
+
+void		ft_find_paths(t_room *farm, int start_index, int end_index);
 
 int			ft_find_room(t_room *farm, char *line, int room_amount);	//move to other file from farm_alloc.c
 
