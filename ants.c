@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ants.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+        */
+/*   By: vkuikka <vkuikka@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/03 19:23:18 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/10/14 15:33:11 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/10/16 13:49:02 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ static int	ft_map_farm(t_room *farm, int room)
 		}
 		i++;
 	}
-	// printf("%d\n", room);
 	if (valid_links < 1)
 	{
 		// if (farm[room].signature == -2 ||
@@ -72,43 +71,59 @@ static int	ft_map_farm(t_room *farm, int room)
 
 static int	ft_next_link(t_room *farm, int path, int room)
 {
-	int		i;
-	int		best_len;
-	int		best_link;
+	static t_room	*secondary = NULL;
+	static int		secondary_range = 0;
+	int				best_link;
+	int				best_len;
+	int				i;
 
 	i = 0;
 	best_len = -1;
 	best_link = -1;
+	if (secondary && secondary->path_index != path)
+	{
+		secondary_range = 0;
+		secondary = NULL;
+	}
 	while (i < farm[room].link_amount)
 	{
 		if (farm[farm[room].links[i]].signature == -1)
 			return (farm[room].links[i]);
 		if (farm[farm[room].links[i]].signature > -1 &&
-			farm[farm[room].links[i]].path_index == -1 &&
 			(farm[farm[room].links[i]].signature < best_len || best_len == -1))
 		{
-			best_len = farm[farm[room].links[i]].signature;
-			best_link = farm[room].links[i];
+			if (farm[farm[room].links[i]].path_index != -1 && 
+				farm[farm[room].links[i]].path_index != path &&
+				(secondary == NULL || secondary->signature >
+				farm[farm[room].links[i]].signature + secondary_range))
+			{
+				secondary_range = 0;
+				secondary = &farm[farm[room].links[i]];
+			}
+			else if (farm[farm[room].links[i]].path_index == -1)
+			{
+				best_len = farm[farm[room].links[i]].signature;
+				best_link = farm[room].links[i];
+			}
 		}
 		i++;
 	}
+	secondary_range++;
 	/*
-		if no possible link is found trace path backwards until another path is found.
-		also check if current path intercepts another path and first trace that path backwards until another path is found for it.
-		maybe do both checks for path length before deciding which path to take
-
-		currently the first shortest path is found for sure but interception has to be solved
+		if no possible link is found trace both paths backwards until the shortest path between them is found.
+		if during this more paths are found trace all paths (recursion?) until shortest paths are found
 	*/
 	if (best_len == -1)
 	{
 		// ft_secondary_path(); //?
-		printf("exit because path probably intercepts another\n");
+		printf("\n%d\n\n", secondary_range);
+		ft_print_room(*secondary);
+		printf("exit because path intercepts another\n");
 		exit(1);
 	}
 
 	farm[best_link].path_index = path;
-	room = best_link;
-	return (room);
+	return (best_link);
 }
 
 void		ft_find_paths(t_room *farm, int start_index, int end_index)
