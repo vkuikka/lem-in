@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/03 19:23:18 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/10/16 17:15:19 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/10/16 18:00:53 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,17 +110,11 @@ void		ft_ants(t_room *farm, int ant_amount, int room_amount)
 
 
 	ft_map_farm(farm, start_index);
+	ft_print_farm(farm);
+	exit(1);
 	//if there is only one link in either start or exit stop here
 	ft_find_paths(farm, start_index, exit_index);
 	exit(1);
-
-	ft_print_farm(farm);
-
-	printf("\nfind: \n\n");
-	// ft_print_room(farm[0]);
-	exit(1);
-
-
 
 
 	return ;
