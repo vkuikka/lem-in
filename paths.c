@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/16 14:47:06 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/10/16 17:15:14 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/10/16 18:00:11 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,19 @@
 static int	ft_solve_intersection(t_room *farm, int room, int path, int link)
 {
 	int		previous;
+	int		best_link;
+	int		best_dist;
 	int		tmp;
 	int		i;
 
 	i = 0;
-	ft_print_room(farm[link]);
-	ft_print_room(farm[room]);
-
+	printf("\n\n\n");
+	// ft_print_room(farm[link]);
+	// ft_print_room(farm[room]);
 	tmp = link;
 	previous = tmp;
+	best_link = -1;
+	best_dist = 0;
 	while (farm[tmp].signature != -2)
 	{
 		if (farm[tmp].links[i] != previous &&
@@ -32,11 +36,35 @@ static int	ft_solve_intersection(t_room *farm, int room, int path, int link)
 		{
 			previous = tmp;
 			tmp = farm[tmp].links[i];
+			best_dist++;
+			i = 0;
+			while (i < farm[tmp].link_amount && farm[tmp].signature != -2)
+			{
+				if ((best_link == -1 || farm[farm[tmp].links[i]].signature < farm[best_link].signature - best_dist) &&
+					farm[farm[tmp].links[i]].signature != -2 &&
+					farm[farm[tmp].links[i]].path_index != path &&
+					farm[farm[tmp].links[i]].path_index != farm[tmp].path_index)
+				{
+					best_link = farm[tmp].links[i];
+					printf("backtrack secondary found %s\n", farm[best_link].room_name);
+					best_dist = 0;
+				}
+				i++;
+			}
 			i = 0;
 		}
 		else
 			i++;
 	}
+	if (best_link != -1)
+	{
+		i = 0;
+		while (i < farm[best_link].link_amount)
+			i++;
+	}
+	else
+		ft_error("no secondary path for intercepted path was found???\n");
+	ft_print_room(farm[best_link]);
 	ft_print_room(farm[tmp]);
 	printf("intercept not solved\n");
 	exit(1);
@@ -67,7 +95,7 @@ static int	ft_next_link(t_room *farm, int path, int room, int path_amount)
 			secondary[i] = NULL;
 	}
 	i = 0;
-	ft_print_room(farm[room]);
+	// ft_print_room(farm[room]);
 	while (i < farm[room].link_amount)
 	{
 		while (farm[farm[room].links[i]].signature < 0)
@@ -109,7 +137,6 @@ static int	ft_next_link(t_room *farm, int path, int room, int path_amount)
 		}
 		i++;
 	}
-	printf("\n");
 	/*
 		if no possible link is found trace both paths backwards until the shortest path between them is found.
 		if during this more paths are found trace all paths (recursion?) until shortest paths are found
