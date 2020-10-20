@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/03 19:23:18 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/10/20 18:34:58 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/10/20 19:05:37 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static int	ft_find_endpoint(t_room *farm, int room_amount, int path_index)
 
 static int	ft_map_farm(t_room *farm, int room)
 {
-	int		valid_links;
+	int		bad_links;
 	int		i;
 
 	if (farm[room].link_amount < 2 && farm[room].signature > -1)
@@ -39,22 +39,25 @@ static int	ft_map_farm(t_room *farm, int room)
 		return (0);
 	}
 	i = 0;
-	valid_links = 0;
+	bad_links = 0;
 	while (i < farm[room].link_amount)
 	{
 		if (farm[farm[room].links[i]].path_index == -2)
 			return (1);
-		if (farm[farm[room].links[i]].path_index == 0 &&
-			(farm[farm[room].links[i]].signature == 0 ||
-			farm[farm[room].links[i]].signature > farm[room].signature + 1))
+
+		if (farm[farm[room].links[i]].signature == -1)
+			bad_links++;
+		else if (farm[farm[room].links[i]].path_index != -1 &&
+				(farm[farm[room].links[i]].signature == 0 ||
+				farm[farm[room].links[i]].signature > farm[room].signature + 1))
 		{
 			farm[farm[room].links[i]].signature = farm[room].signature + 1;
-			if (ft_map_farm(farm, farm[room].links[i]))
-				valid_links++;
+			if (!(ft_map_farm(farm, farm[room].links[i])))
+				bad_links++;
 		}
 		i++;
 	}
-	if (valid_links < 1)
+	if (i - bad_links <= 1)
 	{
 		farm[room].signature = -1;
 		return (0);
