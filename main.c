@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 15:11:17 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/10/16 17:14:55 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/10/17 15:53:05 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,9 @@ void	ft_print_room(t_room room)
 	else
 		printf ("%d\n", room.path_index);
 	printf ("signature: ");
-	if(room.signature == -1)
+	if(room.path_index == -1)
 		printf("start\n");
-	else if (room.signature == -2)
+	else if (room.path_index == -2)
 		printf("end\n");
 	else
 		printf("%d\n", room.signature);
