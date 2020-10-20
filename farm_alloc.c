@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 15:54:18 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/10/14 14:32:01 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/10/17 15:47:10 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ t_room		*ft_handle_rooms(int *room_amount, t_input *input)
 			ft_error("memory allocation failed\n");
 		farm[i].links[0] = -1;
 		farm[i].link_amount = 0;
-		farm[i].path_index = -1;
+		farm[i].path_index = 0;
 		farm[i].signature = 0;
 		i++;
 	}
@@ -182,12 +182,12 @@ int		ft_rooms(t_input *input, t_room **farm, int line_amount)
 	{
 		if (!ft_strcmp(input->line, "##start") && input->next)
 		{
-			farm[0][ft_find_room(*farm, input->next->line, room_amount)].signature = -1;
+			farm[0][ft_find_room(*farm, input->next->line, room_amount)].path_index = -1;
 			last_instruction++;
 		}
 		else if (!ft_strcmp(input->line, "##end") && input->next)
 		{
-			farm[0][ft_find_room(*farm, input->next->line, room_amount)].signature = -2;
+			farm[0][ft_find_room(*farm, input->next->line, room_amount)].path_index = -2;
 			last_instruction++;
 		}
 		free(input->line);
