@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/30 15:11:17 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/10/17 15:53:05 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/10/26 14:51:48 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,17 +29,13 @@ void	ft_print_room(t_room room)
 		printf("%d ", room.links[i]);
 	printf ("  total: %d", room.link_amount);
 	printf ("\npath: ");
-	if (room.path_index < 0)
-		printf("none\n");
+	if(room.path_index == -1)
+		printf("start:\t%d\n", room.path_index);
+	else if (room.path_index == -2)
+		printf("end:\t%d\n", room.path_index);
 	else
 		printf ("%d\n", room.path_index);
-	printf ("signature: ");
-	if(room.path_index == -1)
-		printf("start\n");
-	else if (room.path_index == -2)
-		printf("end\n");
-	else
-		printf("%d\n", room.signature);
+	printf("signature: %d\n", room.signature);
 	printf("\n");
 }
 
@@ -76,9 +72,6 @@ int		main(void)
 	room_amount = 0;
 	if (!(farm = ft_farm_alloc(farm, &room_amount, &ant_amount)))
 		return (1);
-	// for (int i = 0; i < room_amount; i++)
-	// 	ft_print_room(farm[i]);
-	// printf("\n\n");
 	ft_ants(farm, ant_amount, room_amount);
 	return (0);
 }
