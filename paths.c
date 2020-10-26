@@ -6,13 +6,42 @@
 /*   By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/16 14:47:06 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/10/26 17:37:57 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/10/26 20:08:55 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lem-in.h"
 
 void		ft_path_trace(t_room *farm, int trace_start, int path);
+
+static void	ft_clean_path(t_room *farm, int link)
+{
+	int		tmp;
+	int		i;
+
+	i = 0;
+	tmp = link;
+	while (farm[tmp].path_index != -1)
+	{
+		i = 0;
+		while (i < farm[tmp].link_amount)
+		{
+			if (farm[farm[tmp].links[i]].path_index == -1)
+			{
+				tmp = farm[tmp].links[i];
+				break ;
+			}
+			if (farm[farm[tmp].links[i]].path_index == farm[link].path_index &&
+				farm[farm[tmp].links[i]].signature < farm[tmp].signature)
+			{
+				tmp = farm[tmp].links[i];
+				farm[tmp].path_index = 0;
+				i = 0;
+			}
+			i++;
+		}
+	}
+}
 
 static int	ft_solve_intersection(t_room *farm, int room, int link, int path)
 {
@@ -22,10 +51,14 @@ static int	ft_solve_intersection(t_room *farm, int room, int link, int path)
 	int		tmp;
 	int		i;
 
-	printf("\n");
+	printf("\n\n");
 	ft_print_room(farm[room]);
 	ft_print_room(farm[link]);
 	// printf("%d\n", path);
+	ft_print_farm(farm);
+	ft_clean_path(farm, link);
+	ft_print_farm(farm);
+	exit(1);
 
 	i = 0;
 	tmp = link;
@@ -72,13 +105,17 @@ static int	ft_solve_intersection(t_room *farm, int room, int link, int path)
 
 	// printf("next trace\n");
 	// ft_path_trace(farm, link, farm[best_link]);
+	printf("one\n");
 	ft_path_trace(farm, room, farm[room].path_index);
+	printf("two\n");
+	printf("%d\n", best_link);
 	farm[best_link].path_index = farm[tmp].path_index;
 	ft_path_trace(farm, best_link, farm[best_link].path_index);
+	printf("three\n");
+
 	printf("\n\n\n\n");
 	ft_print_farm(farm);
 
-	// printf("intercept not solved\n");
 	exit(1);
 	return (0);
 	(void)farm;
@@ -113,6 +150,12 @@ static int	ft_next_link(t_room *farm, int path, int room)
 	if (best_len == -1)
 	{
 		printf("intercepting from room: %s\n", farm[room].room_name);
+		if (room == 19)
+		{
+			// printf("asd\n\n\n\n\n");
+			// ft_print_farm(farm);
+			exit(1);
+		}
 
 		// if no possible link is found trace both paths backwards until the shortest path between them is found.
 		// if during this more paths are found trace all paths (recursion?) until shortest paths are found
