@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/03 19:23:18 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/10/20 19:05:37 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/10/26 15:30:53 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,13 @@ static int	ft_map_farm(t_room *farm, int room)
 	while (i < farm[room].link_amount)
 	{
 		if (farm[farm[room].links[i]].path_index == -2)
+		{
+			//gives last room a signature
+			if (farm[room].signature + 1 < farm[farm[room].links[i]].signature ||
+				!farm[farm[room].links[i]].signature)
+				farm[farm[room].links[i]].signature = farm[room].signature + 1;
 			return (1);
-
+		}
 		if (farm[farm[room].links[i]].signature == -1)
 			bad_links++;
 		else if (farm[farm[room].links[i]].path_index != -1 &&
@@ -110,8 +115,6 @@ void		ft_ants(t_room *farm, int ant_amount, int room_amount)
 	printf("%d %d\n", start_index, exit_index);
 
 	ft_map_farm(farm, start_index);
-	// ft_print_farm(farm);
-	// exit(1);
 
 	if (path_amount > 1)
 		ft_find_paths(farm, start_index, exit_index);
