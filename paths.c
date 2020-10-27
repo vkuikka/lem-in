@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/16 14:47:06 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/10/27 21:03:47 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/10/27 21:15:06 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,8 @@ static int	ft_solve_intersection(t_room *farm, int room, int link, int path)
 	best_dist = 0;
 	while (farm[tmp].path_index != -2)
 	{
-		if (farm[tmp].links[i] != previous &&
+		if (i < farm[tmp].link_amount &&
+			farm[tmp].links[i] != previous &&
 			farm[farm[tmp].links[i]].path_index == path &&
 			farm[farm[tmp].links[i]].signature > farm[tmp].signature)
 		{
@@ -97,23 +98,31 @@ static int	ft_solve_intersection(t_room *farm, int room, int link, int path)
 			i = 0;
 			while (i < farm[tmp].link_amount)
 			{
-				if ((best_link == -1 || farm[farm[tmp].links[i]].signature < farm[best_link].signature - best_dist) &&
+				printf("\n\n\n\n\n\n\n");
+				ft_print_farm(farm);
+				printf("%d %d %d\n", best_link, i, best_dist);
+	ft_print_room(farm[room]);
+	ft_print_room(farm[link]);
+				ft_print_room(farm[tmp]);
+				if ((best_link == -1 || farm[farm[tmp].links[i]].signature < best_dist) &&
 					farm[tmp].links[i] != previous &&
 					farm[farm[tmp].links[i]].path_index != -2 &&
 					farm[farm[tmp].links[i]].path_index != farm[tmp].path_index)
 				{
 					best_link = farm[tmp].links[i];
 					printf("backtrack secondary found %s\n", farm[best_link].room_name);
-					best_dist = 0;
+					best_dist = farm[best_link].signature;
 				}
 				i++;
 			}
 			i = 0;
 		}
-		else if (farm[farm[tmp].links[i]].path_index == -2)
+		else if (i >= farm[tmp].link_amount ||
+				farm[farm[tmp].links[i]].path_index == -2)
 			break ;
 		else
 			i++;
+		printf("index%d\n", i);
 	}
 	if (best_link == -1)
 		ft_error("no secondary path for intercepted path was found??? FIX\n");
@@ -146,10 +155,10 @@ static int	ft_solve_intersection(t_room *farm, int room, int link, int path)
 	farm[best_link].path_index = farm[tmp].path_index;
 	ft_print_room(farm[15]);
 	ft_path_trace(farm, best_link, farm[best_link].path_index);
-	printf("three\n");
 
 	printf("\n\n\n\n");
 	ft_print_farm(farm);
+	printf("done\n");
 
 	exit(1);
 	return (0);
