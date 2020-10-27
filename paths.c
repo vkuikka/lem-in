@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/16 14:47:06 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/10/26 20:08:55 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/10/27 21:03:47 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ static void	ft_clean_path(t_room *farm, int link)
 
 	i = 0;
 	tmp = link;
+	printf("clean path\n");
+	ft_print_room(farm[link]);
 	while (farm[tmp].path_index != -1)
 	{
 		i = 0;
@@ -38,7 +40,16 @@ static void	ft_clean_path(t_room *farm, int link)
 				farm[tmp].path_index = 0;
 				i = 0;
 			}
-			i++;
+			else if (i == farm[tmp].link_amount - 1)
+				ft_error("asd\n");
+			else
+				i++;
+			// else if (i == farm[tmp].link_amount - 1)
+			// {
+			// 	printf("\n\n\n\n");
+			// 	ft_print_farm(farm);
+			// 	ft_error("check path cleaning!!!!!\n");
+			// }
 		}
 	}
 }
@@ -51,21 +62,26 @@ static int	ft_solve_intersection(t_room *farm, int room, int link, int path)
 	int		tmp;
 	int		i;
 
-	printf("\n\n");
 	ft_print_room(farm[room]);
 	ft_print_room(farm[link]);
+
 	// printf("%d\n", path);
-	ft_print_farm(farm);
-	ft_clean_path(farm, link);
-	ft_print_farm(farm);
-	exit(1);
+	// ft_print_farm(farm);
+	// ft_clean_path(farm, link);
+	// ft_print_farm(farm);
+	// exit(1);
+
+	// ft_print_room(farm[9]);
+	// ft_print_room(farm[12]);
+	// ft_print_room(farm[13]);
+	// ft_print_room(farm[15]);
+	printf("/////////////////////////////\n");
 
 	i = 0;
 	tmp = link;
 	previous = link;
 	best_link = -1;
 	best_dist = 0;
-	(void)path;
 	while (farm[tmp].path_index != -2)
 	{
 		if (farm[tmp].links[i] != previous &&
@@ -73,7 +89,8 @@ static int	ft_solve_intersection(t_room *farm, int room, int link, int path)
 			farm[farm[tmp].links[i]].signature > farm[tmp].signature)
 		{
 			// printf("%d\n", tmp);
-			farm[tmp].path_index = 0;
+			printf("%d %d %d\n", tmp, previous, i);
+			// farm[tmp].path_index = 0;
 			previous = tmp;
 			tmp = farm[tmp].links[i];
 			best_dist++;
@@ -100,6 +117,23 @@ static int	ft_solve_intersection(t_room *farm, int room, int link, int path)
 	}
 	if (best_link == -1)
 		ft_error("no secondary path for intercepted path was found??? FIX\n");
+	i = 0;
+	while (i < farm[best_link].link_amount)
+	{
+		if (farm[farm[best_link].links[i]].path_index == farm[link].path_index)
+		{
+			printf("asdsdasd\n");
+			ft_clean_path(farm, farm[best_link].links[i]);
+			break;
+		}
+		i++;
+	}
+
+	// ft_print_room(farm[9]);
+	// ft_print_room(farm[12]);
+	// ft_print_room(farm[13]);
+	// ft_print_room(farm[15]);
+	// printf("\n\n\n\n");
 	// ft_print_room(farm[best_link]);
 	// ft_print_room(farm[tmp]);
 
@@ -110,6 +144,7 @@ static int	ft_solve_intersection(t_room *farm, int room, int link, int path)
 	printf("two\n");
 	printf("%d\n", best_link);
 	farm[best_link].path_index = farm[tmp].path_index;
+	ft_print_room(farm[15]);
 	ft_path_trace(farm, best_link, farm[best_link].path_index);
 	printf("three\n");
 
@@ -118,9 +153,6 @@ static int	ft_solve_intersection(t_room *farm, int room, int link, int path)
 
 	exit(1);
 	return (0);
-	(void)farm;
-	(void)room;
-	(void)link;
 }
 
 static int	ft_next_link(t_room *farm, int path, int room)
@@ -131,7 +163,12 @@ static int	ft_next_link(t_room *farm, int path, int room)
 
 	best_len = -1;
 	best_link = -1;
-	// printf("%d\n", room);
+	// printf("next link room %d\n", room);
+	if (room == 13)
+	{
+		ft_print_room(farm[13]);
+		ft_print_room(farm[12]);
+	}
 	i = 0;
 	while (i < farm[room].link_amount)
 	{
@@ -152,7 +189,7 @@ static int	ft_next_link(t_room *farm, int path, int room)
 		printf("intercepting from room: %s\n", farm[room].room_name);
 		if (room == 19)
 		{
-			// printf("asd\n\n\n\n\n");
+			printf("asd\n\n\n\n\n");
 			// ft_print_farm(farm);
 			exit(1);
 		}
@@ -177,6 +214,8 @@ static int	ft_next_link(t_room *farm, int path, int room)
 		exit(1);
 		return (-1);
 	}
+	// printf("path %d\n", path);
+	// ft_print_room(farm[best_link]);
 	if (farm[best_link].path_index != -1)
 		farm[best_link].path_index = path;
 	return (best_link);
