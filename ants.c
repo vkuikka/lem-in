@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/03 19:23:18 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/10/26 15:30:53 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/10/28 12:50:45 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,10 +104,10 @@ void		ft_ants(t_room *farm, int ant_amount, int room_amount)
 	// 	ft_memset(paths[room], -1, room_amount * 4);
 	// 	room++;
 	// }
-	printf("start links: ");
+	printf("start %d links: ", start_index);
 	for (int i = 0; i < farm[start_index].link_amount; i++)
 		printf("%d ", farm[start_index].links[i]);
-	printf("\nend links: ");
+	printf("\nend %d links: ", exit_index);
 	for (int i = 0; i < farm[exit_index].link_amount; i++)
 		printf("%d ", farm[exit_index].links[i]);
 	printf("\n");
