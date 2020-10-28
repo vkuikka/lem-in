@@ -6,7 +6,7 @@
 /*   By: vkuikka <vkuikka@student.hive.fi>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/16 14:47:06 by vkuikka           #+#    #+#             */
-/*   Updated: 2020/10/27 21:15:06 by vkuikka          ###   ########.fr       */
+/*   Updated: 2020/10/28 13:02:09 by vkuikka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ static void	ft_clean_path(t_room *farm, int link)
 
 	i = 0;
 	tmp = link;
-	printf("clean path\n");
-	ft_print_room(farm[link]);
+	// printf("clean path from:\n");
+	// ft_print_room(farm[link]);
 	while (farm[tmp].path_index != -1)
 	{
 		i = 0;
@@ -41,15 +41,9 @@ static void	ft_clean_path(t_room *farm, int link)
 				i = 0;
 			}
 			else if (i == farm[tmp].link_amount - 1)
-				ft_error("asd\n");
+				ft_error("couldnt clean path because next link was not found. FIX!!!\n");
 			else
 				i++;
-			// else if (i == farm[tmp].link_amount - 1)
-			// {
-			// 	printf("\n\n\n\n");
-			// 	ft_print_farm(farm);
-			// 	ft_error("check path cleaning!!!!!\n");
-			// }
 		}
 	}
 }
@@ -62,20 +56,9 @@ static int	ft_solve_intersection(t_room *farm, int room, int link, int path)
 	int		tmp;
 	int		i;
 
-	ft_print_room(farm[room]);
-	ft_print_room(farm[link]);
-
-	// printf("%d\n", path);
-	// ft_print_farm(farm);
-	// ft_clean_path(farm, link);
-	// ft_print_farm(farm);
-	// exit(1);
-
-	// ft_print_room(farm[9]);
-	// ft_print_room(farm[12]);
-	// ft_print_room(farm[13]);
-	// ft_print_room(farm[15]);
-	printf("/////////////////////////////\n");
+	// printf("intersection between:\n");
+	// ft_print_room(farm[room]);
+	// ft_print_room(farm[link]);
 
 	i = 0;
 	tmp = link;
@@ -89,21 +72,14 @@ static int	ft_solve_intersection(t_room *farm, int room, int link, int path)
 			farm[farm[tmp].links[i]].path_index == path &&
 			farm[farm[tmp].links[i]].signature > farm[tmp].signature)
 		{
-			// printf("%d\n", tmp);
 			printf("%d %d %d\n", tmp, previous, i);
-			// farm[tmp].path_index = 0;
 			previous = tmp;
 			tmp = farm[tmp].links[i];
 			best_dist++;
 			i = 0;
 			while (i < farm[tmp].link_amount)
 			{
-				printf("\n\n\n\n\n\n\n");
-				ft_print_farm(farm);
-				printf("%d %d %d\n", best_link, i, best_dist);
-	ft_print_room(farm[room]);
-	ft_print_room(farm[link]);
-				ft_print_room(farm[tmp]);
+				// printf("%d %d %d\n", best_link, i, best_dist);
 				if ((best_link == -1 || farm[farm[tmp].links[i]].signature < best_dist) &&
 					farm[tmp].links[i] != previous &&
 					farm[farm[tmp].links[i]].path_index != -2 &&
@@ -122,7 +98,6 @@ static int	ft_solve_intersection(t_room *farm, int room, int link, int path)
 			break ;
 		else
 			i++;
-		printf("index%d\n", i);
 	}
 	if (best_link == -1)
 		ft_error("no secondary path for intercepted path was found??? FIX\n");
@@ -131,36 +106,16 @@ static int	ft_solve_intersection(t_room *farm, int room, int link, int path)
 	{
 		if (farm[farm[best_link].links[i]].path_index == farm[link].path_index)
 		{
-			printf("asdsdasd\n");
 			ft_clean_path(farm, farm[best_link].links[i]);
 			break;
 		}
 		i++;
 	}
 
-	// ft_print_room(farm[9]);
-	// ft_print_room(farm[12]);
-	// ft_print_room(farm[13]);
-	// ft_print_room(farm[15]);
-	// printf("\n\n\n\n");
-	// ft_print_room(farm[best_link]);
-	// ft_print_room(farm[tmp]);
-
-	// printf("next trace\n");
-	// ft_path_trace(farm, link, farm[best_link]);
-	printf("one\n");
 	ft_path_trace(farm, room, farm[room].path_index);
-	printf("two\n");
-	printf("%d\n", best_link);
 	farm[best_link].path_index = farm[tmp].path_index;
-	ft_print_room(farm[15]);
 	ft_path_trace(farm, best_link, farm[best_link].path_index);
 
-	printf("\n\n\n\n");
-	ft_print_farm(farm);
-	printf("done\n");
-
-	exit(1);
 	return (0);
 }
 
@@ -170,20 +125,15 @@ static int	ft_next_link(t_room *farm, int path, int room)
 	int				best_len;
 	int				i;
 
+	i = 0;
 	best_len = -1;
 	best_link = -1;
-	// printf("next link room %d\n", room);
-	if (room == 13)
-	{
-		ft_print_room(farm[13]);
-		ft_print_room(farm[12]);
-	}
-	i = 0;
 	while (i < farm[room].link_amount)
 	{
 		while (farm[farm[room].links[i]].signature == -1)	//this skips unusable links
-			if (i++ >= farm[room].link_amount)
-				break;
+			i++;
+		if (i >= farm[room].link_amount)
+			break;
 		if ((farm[farm[room].links[i]].signature < best_len || best_len == -1) &&
 			(farm[farm[room].links[i]].path_index == 0 ||
 			farm[farm[room].links[i]].path_index == -1))
@@ -196,12 +146,8 @@ static int	ft_next_link(t_room *farm, int path, int room)
 	if (best_len == -1)
 	{
 		printf("intercepting from room: %s\n", farm[room].room_name);
-		if (room == 19)
-		{
-			printf("asd\n\n\n\n\n");
-			// ft_print_farm(farm);
-			exit(1);
-		}
+		ft_print_room(farm[room]);
+
 
 		// if no possible link is found trace both paths backwards until the shortest path between them is found.
 		// if during this more paths are found trace all paths (recursion?) until shortest paths are found
